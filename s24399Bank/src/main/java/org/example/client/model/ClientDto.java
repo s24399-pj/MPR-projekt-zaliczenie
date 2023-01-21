@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @Data
 public class ClientDto {
-
     private long id;
     private String firstName;
     private String lastName;

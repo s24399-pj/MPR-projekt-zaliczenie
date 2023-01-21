@@ -1,11 +1,9 @@
 package org.example.transfer.model;
 
 import lombok.*;
+import org.example.client.model.Client;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,4 +16,10 @@ public class Transfer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @ManyToOne
+    private Client sender;
+    private double amount;
+
+    @Enumerated(EnumType.STRING)
+    private TransferType transferType;
 }
