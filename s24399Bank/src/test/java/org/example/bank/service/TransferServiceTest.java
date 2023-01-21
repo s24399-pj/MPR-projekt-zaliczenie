@@ -1,5 +1,7 @@
 package org.example.bank.service;
 
+import org.example.client.ClientRepository;
+import org.example.client.ClientService;
 import org.example.client.model.Client;
 import org.example.transfer.TransferRepository;
 import org.example.transfer.TransferService;
@@ -16,6 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -23,6 +26,12 @@ public class TransferServiceTest {
 
     @Mock
     private TransferRepository transferRepository;
+
+    @Mock
+    private ClientRepository clientRepository;
+
+    @InjectMocks
+    private ClientService clientService;
 
     @InjectMocks
     private TransferService transferService;
@@ -67,4 +76,26 @@ public class TransferServiceTest {
         assertEquals(transfers,transfersFound);
     }
 
+    @Test
+    void shouldMakeTransaction(){
+        Client client1 = Client.builder()
+                .id(1)
+                .firstName("Satoshi")
+                .lastName("Nakamoto")
+                .email("twinturbov8@combustion.engine")
+                .moneyAmount(1000)
+                .pesel(2231202931l)
+                .build();
+
+        Transfer transfer1 = Transfer.builder()
+                .id(1)
+                .amount(100)
+                .build();
+
+        when(clientService.find(1l)).thenReturn(client1);
+        when(clientRepository.save(client1)).thenReturn(client1);
+
+        Transfer transferMade = transferService.transferMoney(transfer1,1);
+        assertEquals(transferMade.getTransferType(),TransferType.ACCEPTED);
+    }
 }
