@@ -67,6 +67,13 @@ public class ClientControllerTest {
                         .content(objectMapper.writeValueAsString(clientDto2)))
                 .andExpect(status().isCreated());
 
-
+        mockMvc.perform(get("/api/v1/clients")
+                        .with(SecurityMockMvcRequestPostProcessors.user("admin").password("admin")))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", notNullValue()))
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$.[0].firstName", equalTo("Satoshi")))
+                .andExpect(jsonPath("$.[1].firstName", equalTo("Andrew")));
     }
 }
