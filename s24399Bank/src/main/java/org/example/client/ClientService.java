@@ -20,4 +20,8 @@ public class ClientService {
         return clientRepository.findById(clientId)
                 .orElseThrow(() -> new EntityNotFoundException("Client with provided id doesnt exist !"));
     }
+
+    public Client save(Client client){
+        return clientRepository.save(client);
+    }
 }

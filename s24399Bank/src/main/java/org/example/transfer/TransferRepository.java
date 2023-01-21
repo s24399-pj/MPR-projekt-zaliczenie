@@ -1,4 +1,4 @@
 package org.example.transfer;
 
-public class TransferRepository {
+public interface TransferRepository {
 }
