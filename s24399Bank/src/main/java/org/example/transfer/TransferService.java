@@ -7,6 +7,7 @@ import org.example.transfer.model.Transfer;
 import org.example.transfer.model.TransferType;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Service
@@ -21,10 +22,17 @@ public class TransferService {
 
     public Transfer transferMoney(Transfer transfer, long clientId) {
         Client client = clientService.find(clientId);
-        double moneyAmount = transfer.getAmount();
-        client.setMoneyAmount(client.getMoneyAmount() - moneyAmount);
-        transfer.setSender(client);
-        transfer.setTransferType(TransferType.ACCEPTED);
+
+        if (client.getMoneyAmount() - transfer.getAmount()<0 || transfer.getAmount()<1){
+            transfer.setTransferType(TransferType.DECLINED);
+            throw new IllegalArgumentException("Wrong amount value!");
+        }
+        else {
+            double moneyAmount = transfer.getAmount();
+            client.setMoneyAmount(client.getMoneyAmount() - moneyAmount);
+            transfer.setSender(client);
+            transfer.setTransferType(TransferType.ACCEPTED);
+        }
         return transferRepository.save(transfer);
     }
 
@@ -35,5 +43,10 @@ public class TransferService {
         transfer.setSender(client);
         transfer.setTransferType(TransferType.ACCEPTED);
         return transferRepository.save(transfer);
+    }
+
+    public Transfer find(long transferId){
+        return transferRepository.findById(transferId)
+                .orElseThrow(()-> new EntityNotFoundException("Transaction with provied id doesnt exist !"));
     }
 }
